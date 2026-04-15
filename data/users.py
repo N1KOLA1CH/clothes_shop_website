@@ -9,6 +9,7 @@ class User(SqlAlchemyBase, UserMixin):
     name = sqlalchemy.Column(sqlalchemy.String)
     email = sqlalchemy.Column(sqlalchemy.String, unique=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String)
+    balance = sqlalchemy.Column(sqlalchemy.Integer, default=0)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime, 
                                      default=datetime.datetime.now)
     def set_password(self, password):

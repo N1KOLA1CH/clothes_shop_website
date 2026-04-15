@@ -3,7 +3,6 @@
 {% block content %}
 <h1>Регистрация</h1>
 <form action="" method="post">
-    {# Это защитный токен, он ОБЯЗАТЕЛЕН для безопасности #}
     {{ form.hidden_tag() }}
 
     <p>
@@ -40,7 +39,7 @@
 
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     
-    {# Сообщение об ошибке, если пользователь уже существует #}
+    
     {% if message %}
         <div class="alert alert-warning">{{ message }}</div>
     {% endif %}
