@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, abort
+from flask import Flask, render_template, redirect, abort, request
 from data import db_session
 from data.users import User
 from forms.user import RegisterForm
@@ -32,7 +32,7 @@ def index():
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        if form.email.data == "admin@gmail.com":
+        if form.email.data == 'admin@gmail.com':
             return render_template('register.html', title='Регистрация', 
                                    form=form, message="Эта почта зарезервирована!")
         db_sess = db_session.create_session()
@@ -61,7 +61,7 @@ def login():
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
         return render_template('login.html',
-                               message="Неправильный логин или пароль",
+                               message='Неправильный логин или пароль',
                                form=form)
     return render_template('login.html', title='Авторизация', form=form)
 
@@ -125,17 +125,53 @@ def delete_product(id):
         abort(404)
         
     return redirect('/')
-
-if __name__ == '__main__':
-    db_session.global_init("db/shop.db")
+@app.route('/edit_product/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_product(id):
+    if not current_user.is_admin:
+        abort(403)
+        
+    form = ProductForm()
     db_sess = db_session.create_session()
-    admin = db_sess.query(User).filter(User.email == "admin@gmail.com").first()
+    product = db_sess.query(Product).filter(Product.id == id).first()
+    
+    if not product:
+        abort(404)
+
+    if request.method == "GET":
+        # Заполняем текстовые поля данными из базы
+        form.title.data = product.title
+        form.description.data = product.description
+        form.price.data = product.price
+        form.quantity.data = product.quantity
+        # СТРОКУ С is_published УДАЛЯЕМ, так как в твоем классе формы ее нет
+
+    if form.validate_on_submit():
+        product.title = form.title.data
+        product.description = form.description.data
+        product.price = form.price.data
+        product.quantity = form.quantity.data
+        
+        # ЛОГИКА КНОПОК: проверяем, какая из кнопок была нажата
+        if form.submit_publish.data:
+            product.is_published = True
+        elif form.submit_draft.data:
+            product.is_published = False
+            
+        db_sess.commit()
+        return redirect('/')
+        
+    return render_template('add_product.html', title='Редактирование товара', form=form)
+if __name__ == '__main__':
+    db_session.global_init('db/shop.db')
+    db_sess = db_session.create_session()
+    admin = db_sess.query(User).filter(User.email == 'admin@gmail.com').first()
     if not admin:
         admin = User(name="Администратор",
-        email="admin@gmail.com",
+        email='admin@gmail.com',
         balance=9999999,
         is_admin=True)
-        admin.set_password("admin")
+        admin.set_password('admin')
         db_sess.add(admin)
         db_sess.commit()
     db_sess.close()

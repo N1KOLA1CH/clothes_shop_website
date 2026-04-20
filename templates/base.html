@@ -15,7 +15,7 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link" href="/">Главная</a></li>
                 
-                {# СТРОГАЯ ПРОВЕРКА: Кнопки видны ТОЛЬКО если пользователь залогинен И является админом #}
+                
                 {% if current_user.is_authenticated %}
                     {% if current_user.is_admin %}
                         <li class="nav-item">

@@ -37,11 +37,15 @@
         {% endfor %}
     </p>
 
-    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    <p>{{ form.submit(type="submit", class="btn btn-primary w-100") }}</p>
     
+    <div class="text-center mt-3">
+        <span class="text-muted">Уже есть аккаунт?</span> 
+        <a href="/login" class="text-decoration-none">Войдите</a>
+    </div>
     
     {% if message %}
-        <div class="alert alert-warning">{{ message }}</div>
+        <div class="alert alert-warning mt-3">{{ message }}</div>
     {% endif %}
 </form>
 {% endblock %}

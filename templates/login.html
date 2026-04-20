@@ -23,7 +23,15 @@
             {% endfor %}
         </p>
         <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-        <div>{{ message }}</div>
+        <p>{{ form.submit(type="submit", class="btn btn-primary w-100") }}</p>
+        
+        <div class="text-center mt-3">
+            <span class="text-muted">Еще нет аккаунта?</span> 
+            <a href="/register" class="text-decoration-none">Зарегистрируйтесь</a>
+        </div>
+
+        {% if message %}
+            <div class="alert alert-warning mt-3">{{ message }}</div>
+        {% endif %}
     </form>
 {% endblock %}
